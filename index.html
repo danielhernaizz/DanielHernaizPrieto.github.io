@@ -2,74 +2,329 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora Web - Tecnologías Móviles y Web</title>
+    <title>Calculadora Inteligente - TMW</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        input { padding: 10px; font-size: 16px; width: 250px; }
-        button { padding: 10px 15px; font-size: 16px; margin: 5px; cursor: pointer; }
-        .big { color: #0056b3; }
+        /* ESTILO Y UX (10% de la rúbrica) */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-top: 30px; 
+        }
+        .calculator { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            max-width: 600px; 
+            width: 90%; 
+            text-align: center; 
+        }
+        .big { 
+            color: #0056b3; 
+            font-size: 1.2rem;
+            min-height: 55px; /* Evita que la interfaz salte al cambiar el texto */
+            transition: color 0.3s ease;
+        }
+        .error-text { color: #d9534f; } /* Color para los errores */
+        
+        input { 
+            padding: 12px; 
+            font-size: 18px; 
+            width: 80%; 
+            border: 2px solid #ddd; 
+            border-radius: 6px; 
+            margin-bottom: 20px; 
+            transition: border-color 0.3s; 
+        }
+        input:focus { border-color: #0056b3; outline: none; }
+        
+        /* Organización de botones */
+        h3 { font-size: 16px; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        
+        button { 
+            padding: 10px 15px; 
+            font-size: 14px; 
+            border: none; 
+            border-radius: 6px; 
+            background-color: #e9ecef; 
+            cursor: pointer; 
+            transition: all 0.2s ease-in-out; /* Animación de botones */
+        }
+        button:hover { background-color: #d3d9df; transform: translateY(-2px); }
+        button:focus { outline: 2px solid #0056b3; outline-offset: 2px; } /* Accesibilidad teclado */
+        
+        .btn-equal { background-color: #0056b3; color: white; font-weight: bold; width: 100%; margin-top: 10px;}
+        .btn-equal:hover { background-color: #004494; }
     </style>
 </head>
 <body>
-    <h1>Mi Calculadora Web</h1>
+    <div class="calculator">
+        <h1>Calculadora Avanzada</h1>
 
-    <!-- CAMPO DE INFORMACIÓN -->
-    <h2 id="info" class="big" title="Información sobre el número">Información sobre el número</h2>
+        <!-- 1. CAMPO DE INFORMACIÓN -->
+        <h2 id="info" class="big" title="Información sobre el número">Esperando operación...</h2>
 
-    <!-- Campo de entrada -->
-    <div>
-        <label for="n1">Número: </label>
-        <input type="text" id="n1" placeholder="Ej: 5 o 1,2,3,4">
-    </div>
+        <!-- CAMPO DE ENTRADA -->
+        <div>
+            <label for="n1" style="display:none;">Número o CSV:</label>
+            <input type="text" id="n1" placeholder="Introduce un número (ej: 5) o CSV (ej: 1,2,3)">
+        </div>
 
-    <br>
+        <!-- OPERACIONES UNARIAS -->
+        <h3>Operaciones Unarias</h3>
+        <div class="btn-group">
+            <button id="square">x² (Cuadrado)</button>
+            <button id="modulo">|x| (Módulo)</button>
+            <button id="factorial">x! (Factorial)</button>
+            <button id="sqrt">√x (Raíz) *Extra</button>
+        </div>
 
-    <!-- Botones de Operaciones Unarias -->
-    <div>
-        <button id="square">x² (Cuadrado)</button>
-        <button id="modulo">Módulo</button>
-        <button id="factorial">Factorial</button>
-    </div>
+        <!-- OPERACIONES BINARIAS -->
+        <h3>Operaciones Binarias</h3>
+        <div class="btn-group">
+            <button id="addition">Suma (+)</button>
+            <button id="multiplication">Multiplicación (*)</button>
+            <button id="power">Potencia (xʸ) *Extra</button>
+        </div>
+        <button id="eq" class="btn-equal">Resolver (=)</button>
 
-    <br>
-
-    <!-- Botones de Operaciones Binarias -->
-    <div>
-        <button id="addition">Suma (+)</button>
-        <button id="multiplication">Multiplicación (*)</button>
-        <button id="eq">Igual (=)</button>
+        <!-- OPERACIONES CSV -->
+        <h3>Operaciones con Listas (CSV)</h3>
+        <div class="btn-group">
+            <button id="csv-sum">Sumar Todo</button>
+            <button id="csv-mean">Media *Extra</button>
+            <button id="csv-sort">Ordenar</button>
+            <button id="csv-rev">Invertir</button>
+            <button id="csv-rem">Borrar Último</button>
+        </div>
     </div>
 
     <script>
-        // 1. VARIABLES GLOBALES (Obligatorias para el 25% de binarias)
-        let operando1 = 0;
+        // ==========================================
+        // 1. VARIABLES GLOBALES (Para Binarias - 25%)
+        // ==========================================
+        let operando1 = null;
         let operador = "";
 
-        // 2. CAMPO DE INFORMACIÓN (Obligatorio para el 10% y Ampliación 1)
-        const fill_info = (mensaje) => {
-            document.getElementById("info").innerHTML = mensaje;
-        };
-
-        // 3. OPERACIONES UNARIAS (Obligatorio 15%: Funciones flecha)
-        const mod = () => {
-            let caja = document.getElementById("n1");
-            let x = Number(caja.value); // Extraemos y convertimos a número
-            
-            // Calculamos el valor absoluto
-            if (x < 0) {
-                x = -x;
+        // ==========================================
+        // 2. CAMPO DE INFORMACIÓN DINÁMICO (10%)
+        // ==========================================
+        const fill_info = (mensaje, isError = false) => {
+            const infoBox = document.getElementById("info");
+            infoBox.innerHTML = mensaje;
+            // Cambiamos el color si es un error (UX)
+            if (isError) {
+                infoBox.classList.add("error-text");
+            } else {
+                infoBox.classList.remove("error-text");
             }
-            
-            caja.value = x; // Mostramos el resultado en el input
-            
-            // Actualizamos el h2 con literales de plantilla
-            fill_info(`Operación: Módulo (Valor Absoluto). El resultado es ${x}`);
         };
 
-        // 4. GESTOR DE EVENTOS (Se ejecuta cuando la página carga)
+        const setInput = (val) => document.getElementById("n1").value = val;
+        const getInputVal = () => document.getElementById("n1").value.trim();
+
+        // ==========================================
+        // 3. GESTIÓN DE ERRORES (15%)
+        // ==========================================
+        // Esta función valida la entrada ANTES de hacer matemáticas
+        const validate = (isCsv = false) => {
+            const val = getInputVal();
+            
+            if (val === "") {
+                fill_info("Error: El campo está vacío. Introduce un valor.", true);
+                return null;
+            }
+
+            if (isCsv) {
+                let arr = val.split(",");
+                // Verificamos que todos los elementos separados por coma sean números válidos
+                let isValid = arr.every(num => !isNaN(num) && num.trim() !== "");
+                if (!isValid) {
+                    fill_info("Error: Formato CSV inválido. Usa solo números separados por comas.", true);
+                    return null;
+                }
+                return arr.map(Number); // Convertimos el array de strings a números
+            } else {
+                let num = Number(val);
+                if (isNaN(num)) {
+                    fill_info(`Error: "${val}" no es un número válido.`, true);
+                    return null;
+                }
+                return num;
+            }
+        };
+
+        // ==========================================
+        // 4. OPERACIONES UNARIAS (15% - Funciones Flecha)
+        // ==========================================
+        const square = () => {
+            let num = validate();
+            if (num !== null) {
+                let res = num * num;
+                setInput(res);
+                fill_info(`Operación: Cuadrado. El resultado es ${res}`);
+            }
+        };
+
+        const mod = () => {
+            let num = validate();
+            if (num !== null) {
+                let res = num < 0 ? -num : num;
+                setInput(res);
+                fill_info(`Operación: Valor Absoluto. El resultado es ${res}`);
+            }
+        };
+
+        const fact = () => {
+            let num = validate();
+            if (num !== null) {
+                if (num < 0 || !Number.isInteger(num)) {
+                    fill_info("Error: El factorial solo aplica a números enteros y positivos.", true);
+                    return;
+                }
+                let res = 1;
+                for(let i = num; i > 1; i--) { res *= i; }
+                setInput(res);
+                fill_info(`Operación: Factorial. El resultado es ${res}`);
+            }
+        };
+
+        const sqrt = () => {
+            let num = validate();
+            if (num !== null) {
+                if (num < 0) {
+                    fill_info("Error: No existe raíz cuadrada real de un número negativo.", true);
+                    return;
+                }
+                let res = Math.sqrt(num);
+                setInput(res);
+                fill_info(`Operación: Raíz Cuadrada. El resultado es ${res}`);
+            }
+        };
+
+        // ==========================================
+        // 5. OPERACIONES BINARIAS (25%)
+        // ==========================================
+        const setOperation = (opStr, opName) => {
+            let num = validate();
+            if (num !== null) {
+                operando1 = num;
+                operador = opStr;
+                setInput(""); // Limpiamos para el segundo número
+                fill_info(`Operación: ${opName}. Has guardado el ${num}. Introduce el segundo número y pulsa =.`);
+                document.getElementById("n1").focus();
+            }
+        };
+
+        const add = () => setOperation("+", "Suma");
+        const mul = () => setOperation("*", "Multiplicación");
+        const power = () => setOperation("^", "Potenciación");
+
+        const eq = () => {
+            if (!operador) {
+                fill_info("Error: No hay ninguna operación binaria en curso.", true);
+                return;
+            }
+            let operando2 = validate();
+            if (operando2 !== null) {
+                let res;
+                let opName = "";
+                switch(operador) {
+                    case "+": res = operando1 + operando2; opName = "Suma"; break;
+                    case "*": res = operando1 * operando2; opName = "Multiplicación"; break;
+                    case "^": res = Math.pow(operando1, operando2); opName = "Potenciación"; break;
+                }
+                setInput(res);
+                fill_info(`Operación: ${opName}. El resultado de ${operando1} y ${operando2} es ${res}`);
+                operador = ""; // Reseteamos la calculadora
+            }
+        };
+
+        // ==========================================
+        // 6. OPERACIONES CSV (25%)
+        // ==========================================
+        const csvSum = () => {
+            let arr = validate(true);
+            if (arr) {
+                let res = arr.reduce((acc, curr) => acc + curr, 0);
+                setInput(res);
+                fill_info(`Lista CSV: Suma completada. El resultado es ${res}`);
+            }
+        };
+
+        const csvMean = () => {
+            let arr = validate(true);
+            if (arr) {
+                let res = arr.reduce((acc, curr) => acc + curr, 0) / arr.length;
+                setInput(res);
+                fill_info(`Lista CSV: Media calculada. El resultado es ${res}`);
+            }
+        };
+
+        const csvSort = () => {
+            let arr = validate(true);
+            if (arr) {
+                arr.sort((a,b) => a - b);
+                setInput(arr.join(","));
+                fill_info(`Lista CSV: Valores ordenados de menor a mayor.`);
+            }
+        };
+
+        const csvReverse = () => {
+            let arr = validate(true);
+            if (arr) {
+                arr.reverse();
+                setInput(arr.join(","));
+                fill_info(`Lista CSV: Orden de los valores invertido.`);
+            }
+        };
+
+        const csvRemoveLast = () => {
+            let arr = validate(true);
+            if (arr) {
+                if(arr.length === 0) return;
+                let removed = arr.pop();
+                setInput(arr.join(","));
+                fill_info(`Lista CSV: Último elemento (${removed}) eliminado correctamente.`);
+            }
+        };
+
+        // ==========================================
+        // 7. INICIALIZADOR DE EVENTOS
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Conectamos el botón de ID "modulo" con nuestra función flecha 'mod'
+            // Unarias
+            document.getElementById("square").addEventListener("click", square);
             document.getElementById("modulo").addEventListener("click", mod);
+            document.getElementById("factorial").addEventListener("click", fact);
+            document.getElementById("sqrt").addEventListener("click", sqrt);
+            
+            // Binarias
+            document.getElementById("addition").addEventListener("click", add);
+            document.getElementById("multiplication").addEventListener("click", mul);
+            document.getElementById("power").addEventListener("click", power);
+            document.getElementById("eq").addEventListener("click", eq);
+
+            // CSV
+            document.getElementById("csv-sum").addEventListener("click", csvSum);
+            document.getElementById("csv-mean").addEventListener("click", csvMean);
+            document.getElementById("csv-sort").addEventListener("click", csvSort);
+            document.getElementById("csv-rev").addEventListener("click", csvReverse);
+            document.getElementById("csv-rem").addEventListener("click", csvRemoveLast);
+
+            // ACCESIBILIDAD TECLADO (Punto extra de la rúbrica)
+            // Si el usuario pulsa 'Enter', se simula el botón "="
+            document.addEventListener("keydown", (e) => {
+                if(e.key === "Enter") {
+                    e.preventDefault();
+                    eq();
+                }
+            });
         });
     </script>
 </body>
