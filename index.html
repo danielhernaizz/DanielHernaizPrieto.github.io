@@ -2,140 +2,128 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora Web</title>
+    <title>Calculadora Inteligente - TMW</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding-top: 40px;
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-top: 30px; 
         }
-        .caja-principal {
-            background-color: white;
-            width: 550px;
-            margin: 0 auto;
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+        .calculator { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            max-width: 600px; 
+            width: 90%; 
+            text-align: center; 
         }
-        .big {
-            color: #0066cc;
-            font-size: 18px;
-            height: 25px;
-        }
-        /* Animación para el 10% de UX */
-        @keyframes aparecer {
-            from { opacity: 0; transform: translateY(-3px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animar {
-            animation: aparecer 0.4s ease-out;
-        }
-        input {
-            font-size: 16px;
-            padding: 10px;
-            width: 300px;
-            margin-bottom: 20px;
-            border: 2px solid #aaa;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #0066cc;
-        }
-        /* Borde rojo para la gestión de errores (15%) */
-        .error-borde {
-            border-color: red !important;
-        }
-        .seccion {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        button {
-            font-size: 14px;
-            padding: 8px 12px;
-            margin: 4px;
-            cursor: pointer;
-            background-color: #e9e9e9;
-            border: 1px solid #bbb;
-            border-radius: 4px;
-        }
-        button:hover {
-            background-color: #d0d0d0;
-        }
-        button:focus {
-            outline: 2px solid #0066cc;
-        }
-        .boton-igual {
-            background-color: #0066cc;
-            color: white;
+        .big { 
+            color: #0056b3; 
+            font-size: 1.2rem;
+            min-height: 55px; 
             font-weight: bold;
-            width: 200px;
-            padding: 10px;
-            margin-top: 10px;
         }
-        .boton-igual:hover {
-            background-color: #005bb5;
+        .animar {
+            animation: fadeIn 0.4s ease-out;
         }
+        .error-text { color: #d9534f; } 
+        
+        input { 
+            padding: 12px; 
+            font-size: 18px; 
+            width: 80%; 
+            border: 2px solid #ddd; 
+            border-radius: 6px; 
+            margin-bottom: 20px; 
+            transition: border-color 0.3s; 
+        }
+        input:focus { border-color: #0056b3; outline: none; }
+        .error-border { border-color: #d9534f !important; }
+        
+        h3 { font-size: 16px; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        
+        button { 
+            padding: 10px 15px; 
+            font-size: 14px; 
+            border: none; 
+            border-radius: 6px; 
+            background-color: #e9ecef; 
+            cursor: pointer; 
+            transition: all 0.2s ease-in-out; 
+        }
+        button:hover { background-color: #d3d9df; transform: translateY(-2px); }
+        button:focus { outline: 2px solid #0056b3; outline-offset: 2px; } 
+        
+        .btn-equal { background-color: #0056b3; color: white; font-weight: bold; width: 100%; margin-top: 10px;}
+        .btn-equal:hover { background-color: #004494; }
     </style>
 </head>
 <body>
-    <div class="caja-principal">
-        <h1>Mi Calculadora</h1>
-        
-        <h2 id="info" class="big" title="Información sobre el número">Información sobre el número</h2>
-        
-        <input type="text" id="n1" placeholder="Introduce número o CSV">
-        
-        <div class="seccion">
-            <!-- Cambiado de Cuadrado a Cubo por exigencia de la rúbrica -->
+    <div class="calculator">
+        <h1>Calculadora Avanzada</h1>
+
+        <h2 id="info" class="big" title="Información sobre el número">Esperando operación...</h2>
+
+        <div>
+            <input type="text" id="n1" placeholder="Introduce un número (ej: 5) o CSV (ej: 1,2,3)">
+        </div>
+
+        <h3>Operaciones Unarias</h3>
+        <div class="btn-group">
             <button id="cubo">x³ (Cubo)</button>
-            <button id="modulo">Módulo</button>
-            <button id="factorial">Factorial</button>
-            <button id="raiz">Raíz *Extra</button>
+            <button id="modulo">|x| (Módulo)</button>
+            <button id="factorial">x! (Factorial)</button>
+            <button id="sqrt">√x (Raíz) *Extra</button>
         </div>
-        
-        <div class="seccion">
-            <button id="suma">Suma (+)</button>
-            <button id="multiplicacion">Multiplicación (*)</button>
-            <button id="potencia">Potencia *Extra</button>
-            <br>
-            <button id="eq" class="boton-igual">Igual (=)</button>
+
+        <h3>Operaciones Binarias</h3>
+        <div class="btn-group">
+            <button id="addition">Suma (+)</button>
+            <button id="multiplication">Multiplicación (*)</button>
+            <button id="power">Potencia (xʸ) *Extra</button>
         </div>
-        
-        <div class="seccion">
-            <button id="csvSum">Sumar Todo</button>
-            <button id="csvMedia">Media *Extra</button>
-            <button id="csvSort">Ordenar</button>
-            <button id="csvReverse">Invertir</button>
-            <button id="csvRemove">Borrar último</button>
+        <button id="eq" class="btn-equal">Resolver (=)</button>
+
+        <h3>Operaciones con Listas (CSV)</h3>
+        <div class="btn-group">
+            <button id="csv-sum">Sumar Todo</button>
+            <button id="csv-mean">Media *Extra</button>
+            <button id="csv-sort">Ordenar</button>
+            <button id="csv-rev">Invertir</button>
+            <button id="csv-rem">Borrar Último</button>
         </div>
     </div>
 
     <script>
-        let numero1 = 0;
-        let operacion = "";
+        let operando1 = 0;
+        let operador = "";
 
         const fill_info = (mensaje, esError = false) => {
             let info = document.getElementById("info");
             let caja = document.getElementById("n1");
             
-            // Reiniciar la animación para que se vea cada vez que cambia el texto
             info.classList.remove("animar");
-            void info.offsetWidth; 
+            void info.offsetWidth;
             info.classList.add("animar");
             
             info.innerHTML = mensaje;
             
-            // Aplicar estilos visuales de error
             if (esError) {
-                info.style.color = "red";
-                caja.classList.add("error-borde");
+                info.classList.add("error-text");
+                caja.classList.add("error-border");
             } else {
-                info.style.color = "#0066cc";
-                caja.classList.remove("error-borde");
+                info.classList.remove("error-text");
+                caja.classList.remove("error-border");
             }
         };
 
@@ -155,11 +143,9 @@
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                // Lógica del cubo
                 let res = num * num * num;
                 document.getElementById("n1").value = res;
                 
-                // Mensajes específicos de la Tarea 1
                 if (res < 100) {
                     fill_info("Info: El resultado es menor que 100");
                 } else if (res >= 100 && res <= 200) {
@@ -189,7 +175,7 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num) || num < 0 || !Number.isInteger(num)) {
-                    fill_info("Error: El factorial debe ser de un número entero positivo", true);
+                    fill_info("Error: El factorial debe ser un número entero positivo", true);
                     return;
                 }
                 let res = 1;
@@ -201,7 +187,7 @@
             }
         };
 
-        const raiz = () => {
+        const sqrt = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
@@ -209,7 +195,7 @@
                     return;
                 }
                 if (num < 0) {
-                    fill_info("Error: No se puede hacer la raíz de un número negativo", true);
+                    fill_info("Error: No existe raíz de número negativo", true);
                     return;
                 }
                 let res = Math.sqrt(num);
@@ -225,8 +211,8 @@
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                numero1 = num;
-                operacion = "+";
+                operando1 = num;
+                operador = "+";
                 document.getElementById("n1").value = "";
                 fill_info("Operación: Suma. Introduce el segundo número");
             }
@@ -239,8 +225,8 @@
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                numero1 = num;
-                operacion = "*";
+                operando1 = num;
+                operador = "*";
                 document.getElementById("n1").value = "";
                 fill_info("Operación: Multiplicación. Introduce el segundo número");
             }
@@ -253,8 +239,8 @@
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                numero1 = num;
-                operacion = "^";
+                operando1 = num;
+                operador = "^";
                 document.getElementById("n1").value = "";
                 fill_info("Operación: Potencia. Introduce el exponente");
             }
@@ -269,22 +255,24 @@
                 }
                 let res = 0;
                 let nombre = "";
-                if (operacion === "+") {
-                    res = numero1 + numero2;
+                
+                if (operador === "+") {
+                    res = operando1 + numero2;
                     nombre = "Suma";
-                } else if (operacion === "*") {
-                    res = numero1 * numero2;
+                } else if (operador === "*") {
+                    res = operando1 * numero2;
                     nombre = "Multiplicación";
-                } else if (operacion === "^") {
-                    res = Math.pow(numero1, numero2);
+                } else if (operador === "^") {
+                    res = Math.pow(operando1, numero2);
                     nombre = "Potencia";
                 } else {
-                    fill_info("Error: Tienes que elegir una operación primero", true);
+                    fill_info("Error: Selecciona una operación primero", true);
                     return;
                 }
+                
                 document.getElementById("n1").value = res;
                 fill_info("Operación: " + nombre + ". El resultado es " + res);
-                operacion = "";
+                operador = "";
             }
         };
 
@@ -296,13 +284,13 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        fill_info("Error: La lista contiene valores no numéricos", true);
                         return;
                     }
                     total = total + num;
                 }
                 document.getElementById("n1").value = total;
-                fill_info("Lista CSV: se han sumado los valores. El resultado es " + total);
+                fill_info("Lista CSV: se han sumado los valores. Resultado: " + total);
             }
         };
 
@@ -314,14 +302,14 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        fill_info("Error: La lista contiene valores no numéricos", true);
                         return;
                     }
                     total = total + num;
                 }
                 let media = total / elementos.length;
                 document.getElementById("n1").value = media;
-                fill_info("Lista CSV: la media es " + media);
+                fill_info("Lista CSV: media calculada. Resultado: " + media);
             }
         };
 
@@ -333,31 +321,30 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        fill_info("Error: La lista contiene valores no numéricos", true);
                         return;
                     }
                     numeros.push(num);
                 }
                 numeros.sort((a, b) => a - b);
                 document.getElementById("n1").value = numeros.join(",");
-                fill_info("Lista CSV: se han ordenado los valores");
+                fill_info("Lista CSV: valores ordenados");
             }
         };
 
         const invertirCSV = () => {
             if (validate()) {
                 let texto = document.getElementById("n1").value;
-                // Verificamos si hay letras antes de invertir
                 let elementos = texto.split(",");
                 for (let i = 0; i < elementos.length; i++) {
                     if (isNaN(Number(elementos[i]))) {
-                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        fill_info("Error: La lista contiene valores no numéricos", true);
                         return;
                     }
                 }
                 elementos.reverse();
                 document.getElementById("n1").value = elementos.join(",");
-                fill_info("Lista CSV: se ha invertido el orden");
+                fill_info("Lista CSV: orden invertido");
             }
         };
 
@@ -367,35 +354,33 @@
                 let elementos = texto.split(",");
                 for (let i = 0; i < elementos.length; i++) {
                     if (isNaN(Number(elementos[i]))) {
-                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        fill_info("Error: La lista contiene valores no numéricos", true);
                         return;
                     }
                 }
                 elementos.pop();
                 document.getElementById("n1").value = elementos.join(",");
-                fill_info("Lista CSV: se borró el último elemento");
+                fill_info("Lista CSV: último elemento borrado");
             }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Asignación de eventos de click a los botones
             document.getElementById("cubo").addEventListener("click", cubo);
             document.getElementById("modulo").addEventListener("click", mod);
             document.getElementById("factorial").addEventListener("click", fact);
-            document.getElementById("raiz").addEventListener("click", raiz);
+            document.getElementById("sqrt").addEventListener("click", sqrt);
             
-            document.getElementById("suma").addEventListener("click", suma);
-            document.getElementById("multiplicacion").addEventListener("click", multiplicacion);
-            document.getElementById("potencia").addEventListener("click", potencia);
+            document.getElementById("addition").addEventListener("click", suma);
+            document.getElementById("multiplication").addEventListener("click", multiplicacion);
+            document.getElementById("power").addEventListener("click", potencia);
             document.getElementById("eq").addEventListener("click", eq);
             
-            document.getElementById("csvSum").addEventListener("click", sumarCSV);
-            document.getElementById("csvMedia").addEventListener("click", mediaCSV);
-            document.getElementById("csvSort").addEventListener("click", ordenarCSV);
-            document.getElementById("csvReverse").addEventListener("click", invertirCSV);
-            document.getElementById("csvRemove").addEventListener("click", borrarUltimoCSV);
+            document.getElementById("csv-sum").addEventListener("click", sumarCSV);
+            document.getElementById("csv-mean").addEventListener("click", mediaCSV);
+            document.getElementById("csv-sort").addEventListener("click", ordenarCSV);
+            document.getElementById("csv-rev").addEventListener("click", invertirCSV);
+            document.getElementById("csv-rem").addEventListener("click", borrarUltimoCSV);
 
-            // Accesibilidad de teclado (10%)
             document.addEventListener("keydown", (evento) => {
                 if (evento.key === "Enter") {
                     eq();
