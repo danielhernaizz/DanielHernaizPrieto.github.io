@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora Web - Tecnologías Móviles y Web</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input { padding: 10px; font-size: 16px; width: 250px; }
+        button { padding: 10px 15px; font-size: 16px; margin: 5px; cursor: pointer; }
+        .big { color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Mi Calculadora Web</h1>
 
+    <!-- CAMPO DE INFORMACIÓN -->
+    <h2 id="info" class="big" title="Información sobre el número">Información sobre el número</h2>
+
+    <!-- Campo de entrada -->
+    <div>
+        <label for="n1">Número o CSV: </label>
+        <input type="text" id="n1" placeholder="Ej: 5 o 1,2,3,4">
+    </div>
+
+    <br>
+
+    <!-- Botones de Operaciones Unarias -->
+    <div>
+        <button id="square">x² (Cuadrado)</button>
+        <button id="modulo">Módulo</button>
+        <button id="factorial">Factorial</button>
+    </div>
+
+    <br>
+
+    <!-- Botones de Operaciones Binarias -->
+    <div>
+        <button id="addition">Suma (+)</button>
+        <button id="multiplication">Multiplicación (*)</button>
+        <button id="eq">Igual (=)</button>
+    </div>
+
+    <script>
+        // 1. VARIABLES GLOBALES (Obligatorias para el 25% de binarias)
+        let operando1 = 0;
+        let operador = "";
+
+        // 2. CAMPO DE INFORMACIÓN (Obligatorio para el 10% y Ampliación 1)
+        const fill_info = (mensaje) => {
+            document.getElementById("info").innerHTML = mensaje;
+        };
+
+        // 3. OPERACIONES UNARIAS (Obligatorio 15%: Funciones flecha)
+        const mod = () => {
+            let caja = document.getElementById("n1");
+            let x = Number(caja.value); // Extraemos y convertimos a número
+            
+            // Calculamos el valor absoluto
+            if (x < 0) {
+                x = -x;
+            }
+            
+            caja.value = x; // Mostramos el resultado en el input
+            
+            // Actualizamos el h2 con literales de plantilla
+            fill_info(`Operación: Módulo (Valor Absoluto). El resultado es ${x}`);
+        };
+
+        // 4. GESTOR DE EVENTOS (Se ejecuta cuando la página carga)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Conectamos el botón de ID "modulo" con nuestra función flecha 'mod'
+            document.getElementById("modulo").addEventListener("click", mod);
+        });
+    </script>
+</body>
+</html>
