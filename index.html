@@ -23,13 +23,30 @@
             font-size: 18px;
             height: 25px;
         }
+        /* Animación para el 10% de UX */
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(-3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animar {
+            animation: aparecer 0.4s ease-out;
+        }
         input {
             font-size: 16px;
             padding: 10px;
             width: 300px;
             margin-bottom: 20px;
-            border: 1px solid #aaa;
+            border: 2px solid #aaa;
             border-radius: 4px;
+            transition: 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        /* Borde rojo para la gestión de errores (15%) */
+        .error-borde {
+            border-color: red !important;
         }
         .seccion {
             margin-bottom: 20px;
@@ -52,7 +69,7 @@
             outline: 2px solid #0066cc;
         }
         .boton-igual {
-            background-color: #4CAF50;
+            background-color: #0066cc;
             color: white;
             font-weight: bold;
             width: 200px;
@@ -60,7 +77,7 @@
             margin-top: 10px;
         }
         .boton-igual:hover {
-            background-color: #45a049;
+            background-color: #005bb5;
         }
     </style>
 </head>
@@ -73,25 +90,26 @@
         <input type="text" id="n1" placeholder="Introduce número o CSV">
         
         <div class="seccion">
-            <button id="square">x² (Cuadrado)</button>
+            <!-- Cambiado de Cuadrado a Cubo por exigencia de la rúbrica -->
+            <button id="cubo">x³ (Cubo)</button>
             <button id="modulo">Módulo</button>
             <button id="factorial">Factorial</button>
-            <button id="raiz">Raíz</button>
+            <button id="raiz">Raíz *Extra</button>
         </div>
         
         <div class="seccion">
             <button id="suma">Suma (+)</button>
             <button id="multiplicacion">Multiplicación (*)</button>
-            <button id="potencia">Potencia</button>
+            <button id="potencia">Potencia *Extra</button>
             <br>
             <button id="eq" class="boton-igual">Igual (=)</button>
         </div>
         
         <div class="seccion">
-            <button id="csvSum">Sumar CSV</button>
-            <button id="csvMedia">Media CSV</button>
-            <button id="csvSort">Ordenar CSV</button>
-            <button id="csvReverse">Invertir CSV</button>
+            <button id="csvSum">Sumar Todo</button>
+            <button id="csvMedia">Media *Extra</button>
+            <button id="csvSort">Ordenar</button>
+            <button id="csvReverse">Invertir</button>
             <button id="csvRemove">Borrar último</button>
         </div>
     </div>
@@ -100,29 +118,48 @@
         let numero1 = 0;
         let operacion = "";
 
-        const fill_info = (mensaje) => {
-            document.getElementById("info").innerHTML = mensaje;
+        const fill_info = (mensaje, esError = false) => {
+            let info = document.getElementById("info");
+            let caja = document.getElementById("n1");
+            
+            // Reiniciar la animación para que se vea cada vez que cambia el texto
+            info.classList.remove("animar");
+            void info.offsetWidth; 
+            info.classList.add("animar");
+            
+            info.innerHTML = mensaje;
+            
+            // Aplicar estilos visuales de error
+            if (esError) {
+                info.style.color = "red";
+                caja.classList.add("error-borde");
+            } else {
+                info.style.color = "#0066cc";
+                caja.classList.remove("error-borde");
+            }
         };
 
         const validate = () => {
             let valor = document.getElementById("n1").value;
             if (valor === "") {
-                fill_info("Error: El campo está vacío");
+                fill_info("Error: El campo está vacío", true);
                 return false;
             }
             return true;
         };
 
-        const square = () => {
+        const cubo = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                let res = num * num;
+                // Lógica del cubo
+                let res = num * num * num;
                 document.getElementById("n1").value = res;
                 
+                // Mensajes específicos de la Tarea 1
                 if (res < 100) {
                     fill_info("Info: El resultado es menor que 100");
                 } else if (res >= 100 && res <= 200) {
@@ -137,7 +174,7 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 if (num < 0) {
@@ -152,7 +189,7 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num) || num < 0 || !Number.isInteger(num)) {
-                    fill_info("Error: El factorial debe ser de un número entero positivo");
+                    fill_info("Error: El factorial debe ser de un número entero positivo", true);
                     return;
                 }
                 let res = 1;
@@ -168,11 +205,11 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 if (num < 0) {
-                    fill_info("Error: No se puede hacer la raíz de un número negativo");
+                    fill_info("Error: No se puede hacer la raíz de un número negativo", true);
                     return;
                 }
                 let res = Math.sqrt(num);
@@ -185,7 +222,7 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 numero1 = num;
@@ -199,7 +236,7 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 numero1 = num;
@@ -213,13 +250,13 @@
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
                 if (isNaN(num)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 numero1 = num;
                 operacion = "^";
                 document.getElementById("n1").value = "";
-                fill_info("Operación: Potencia. Introduce el segundo número");
+                fill_info("Operación: Potencia. Introduce el exponente");
             }
         };
 
@@ -227,7 +264,7 @@
             if (validate()) {
                 let numero2 = Number(document.getElementById("n1").value);
                 if (isNaN(numero2)) {
-                    fill_info("Error: Introduce un número válido");
+                    fill_info("Error: Introduce un número válido", true);
                     return;
                 }
                 let res = 0;
@@ -242,7 +279,7 @@
                     res = Math.pow(numero1, numero2);
                     nombre = "Potencia";
                 } else {
-                    fill_info("Error: Tienes que elegir una operación primero");
+                    fill_info("Error: Tienes que elegir una operación primero", true);
                     return;
                 }
                 document.getElementById("n1").value = res;
@@ -259,13 +296,13 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números");
+                        fill_info("Error: La lista tiene cosas que no son números", true);
                         return;
                     }
                     total = total + num;
                 }
                 document.getElementById("n1").value = total;
-                fill_info("Lista de valores procesada: se han sumado los valores. El resultado es " + total);
+                fill_info("Lista CSV: se han sumado los valores. El resultado es " + total);
             }
         };
 
@@ -277,14 +314,14 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números");
+                        fill_info("Error: La lista tiene cosas que no son números", true);
                         return;
                     }
                     total = total + num;
                 }
                 let media = total / elementos.length;
                 document.getElementById("n1").value = media;
-                fill_info("Lista de valores procesada: la media es " + media);
+                fill_info("Lista CSV: la media es " + media);
             }
         };
 
@@ -296,24 +333,31 @@
                 for (let i = 0; i < elementos.length; i++) {
                     let num = Number(elementos[i]);
                     if (isNaN(num)) {
-                        fill_info("Error: La lista tiene cosas que no son números");
+                        fill_info("Error: La lista tiene cosas que no son números", true);
                         return;
                     }
                     numeros.push(num);
                 }
                 numeros.sort((a, b) => a - b);
                 document.getElementById("n1").value = numeros.join(",");
-                fill_info("Lista de valores procesada: se ha ordenado");
+                fill_info("Lista CSV: se han ordenado los valores");
             }
         };
 
         const invertirCSV = () => {
             if (validate()) {
                 let texto = document.getElementById("n1").value;
+                // Verificamos si hay letras antes de invertir
                 let elementos = texto.split(",");
+                for (let i = 0; i < elementos.length; i++) {
+                    if (isNaN(Number(elementos[i]))) {
+                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        return;
+                    }
+                }
                 elementos.reverse();
                 document.getElementById("n1").value = elementos.join(",");
-                fill_info("Lista de valores procesada: se ha invertido");
+                fill_info("Lista CSV: se ha invertido el orden");
             }
         };
 
@@ -321,14 +365,21 @@
             if (validate()) {
                 let texto = document.getElementById("n1").value;
                 let elementos = texto.split(",");
+                for (let i = 0; i < elementos.length; i++) {
+                    if (isNaN(Number(elementos[i]))) {
+                        fill_info("Error: La lista tiene cosas que no son números", true);
+                        return;
+                    }
+                }
                 elementos.pop();
                 document.getElementById("n1").value = elementos.join(",");
-                fill_info("Lista de valores procesada: se borró el último elemento");
+                fill_info("Lista CSV: se borró el último elemento");
             }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById("square").addEventListener("click", square);
+            // Asignación de eventos de click a los botones
+            document.getElementById("cubo").addEventListener("click", cubo);
             document.getElementById("modulo").addEventListener("click", mod);
             document.getElementById("factorial").addEventListener("click", fact);
             document.getElementById("raiz").addEventListener("click", raiz);
@@ -344,6 +395,7 @@
             document.getElementById("csvReverse").addEventListener("click", invertirCSV);
             document.getElementById("csvRemove").addEventListener("click", borrarUltimoCSV);
 
+            // Accesibilidad de teclado (10%)
             document.addEventListener("keydown", (evento) => {
                 if (evento.key === "Enter") {
                     eq();
