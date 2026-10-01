@@ -4,66 +4,15 @@
     <meta charset="UTF-8">
     <title>Calculadora Inteligente - TMW</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f7f6; 
-            color: #333; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding-top: 30px; 
-        }
-        .calculator { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-            max-width: 600px; 
-            width: 90%; 
-            text-align: center; 
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .big { 
-            color: #0056b3; 
-            font-size: 1.2rem;
-            min-height: 55px; 
-            font-weight: bold;
-        }
-        .animar {
-            animation: fadeIn 0.4s ease-out;
-        }
-        .error-text { color: #d9534f; } 
-        
-        input { 
-            padding: 12px; 
-            font-size: 18px; 
-            width: 80%; 
-            border: 2px solid #ddd; 
-            border-radius: 6px; 
-            margin-bottom: 20px; 
-            transition: border-color 0.3s; 
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; padding-top: 30px; }
+        .calculator { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 600px; width: 90%; text-align: center; }
+        .big { color: #0056b3; font-size: 1.2rem; min-height: 55px; font-weight: bold; }
+        input { padding: 12px; font-size: 18px; width: 80%; border: 2px solid #ddd; border-radius: 6px; margin-bottom: 20px; transition: border-color 0.3s; }
         input:focus { border-color: #0056b3; outline: none; }
-        .error-border { border-color: #d9534f !important; }
-        
         h3 { font-size: 16px; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        
-        button { 
-            padding: 10px 15px; 
-            font-size: 14px; 
-            border: none; 
-            border-radius: 6px; 
-            background-color: #e9ecef; 
-            cursor: pointer; 
-            transition: all 0.2s ease-in-out; 
-        }
+        button { padding: 10px 15px; font-size: 14px; border: none; border-radius: 6px; background-color: #e9ecef; cursor: pointer; transition: all 0.2s ease-in-out; }
         button:hover { background-color: #d3d9df; transform: translateY(-2px); }
-        button:focus { outline: 2px solid #0056b3; outline-offset: 2px; } 
-        
         .btn-equal { background-color: #0056b3; color: white; font-weight: bold; width: 100%; margin-top: 10px;}
         .btn-equal:hover { background-color: #004494; }
     </style>
@@ -72,7 +21,7 @@
     <div class="calculator">
         <h1>Calculadora Avanzada</h1>
 
-        <h2 id="info" class="big" title="Información sobre el número">Esperando operación...</h2>
+        <h2 id="info" class="big" title="Información sobre el número">Información sobre el número</h2>
 
         <div>
             <input type="text" id="n1" placeholder="Introduce un número (ej: 5) o CSV (ej: 1,2,3)">
@@ -110,20 +59,10 @@
 
         const fill_info = (mensaje, esError = false) => {
             let info = document.getElementById("info");
-            let caja = document.getElementById("n1");
-            
-            info.classList.remove("animar");
-            void info.offsetWidth;
-            info.classList.add("animar");
-            
-            info.innerHTML = mensaje;
-            
             if (esError) {
-                info.classList.add("error-text");
-                caja.classList.add("error-border");
+                info.innerHTML = `<span style="color:#d9534f">${mensaje}</span>`;
             } else {
-                info.classList.remove("error-text");
-                caja.classList.remove("error-border");
+                info.innerHTML = mensaje;
             }
         };
 
@@ -139,11 +78,11 @@
         const cubo = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                let res = num * num * num;
+                let res = Math.pow(num, 3);
                 document.getElementById("n1").value = res;
                 
                 if (res < 100) {
@@ -159,22 +98,20 @@
         const mod = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
-                if (num < 0) {
-                    num = -num;
-                }
-                document.getElementById("n1").value = num;
-                fill_info("Operación: Módulo. El resultado es " + num);
+                let res = Math.abs(num);
+                document.getElementById("n1").value = res;
+                fill_info(`Operación: Módulo. El resultado es ${res}`);
             }
         };
 
         const fact = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num) || num < 0 || !Number.isInteger(num)) {
+                if ((!num && num !== 0) || num < 0 || (num % 1 !== 0)) {
                     fill_info("Error: El factorial debe ser un número entero positivo", true);
                     return;
                 }
@@ -183,14 +120,14 @@
                     res = res * i;
                 }
                 document.getElementById("n1").value = res;
-                fill_info("Operación: Factorial. El resultado es " + res);
+                fill_info(`Operación: Factorial. El resultado es ${res}`);
             }
         };
 
         const sqrt = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
@@ -200,14 +137,14 @@
                 }
                 let res = Math.sqrt(num);
                 document.getElementById("n1").value = res;
-                fill_info("Operación: Raíz. El resultado es " + res);
+                fill_info(`Operación: Raíz. El resultado es ${res}`);
             }
         };
 
         const suma = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
@@ -221,7 +158,7 @@
         const multiplicacion = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
@@ -235,7 +172,7 @@
         const potencia = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
-                if (isNaN(num)) {
+                if (!num && num !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
@@ -249,7 +186,7 @@
         const eq = () => {
             if (validate()) {
                 let numero2 = Number(document.getElementById("n1").value);
-                if (isNaN(numero2)) {
+                if (!numero2 && numero2 !== 0) {
                     fill_info("Error: Introduce un número válido", true);
                     return;
                 }
@@ -271,7 +208,7 @@
                 }
                 
                 document.getElementById("n1").value = res;
-                fill_info("Operación: " + nombre + ". El resultado es " + res);
+                fill_info(`Operación: ${nombre}. El resultado es ${res}`);
                 operador = "";
             }
         };
@@ -281,16 +218,24 @@
                 let texto = document.getElementById("n1").value;
                 let elementos = texto.split(",");
                 let total = 0;
+                let validos = 0;
                 for (let i = 0; i < elementos.length; i++) {
-                    let num = Number(elementos[i]);
-                    if (isNaN(num)) {
-                        fill_info("Error: La lista contiene valores no numéricos", true);
-                        return;
+                    if (elementos[i] !== "") {
+                        let num = Number(elementos[i]);
+                        if (!num && num !== 0) {
+                            fill_info("Error: La lista contiene valores no numéricos", true);
+                            return;
+                        }
+                        total = total + num;
+                        validos = validos + 1;
                     }
-                    total = total + num;
+                }
+                if (validos === 0) {
+                    fill_info("Error: La lista CSV está vacía o es inválida", true);
+                    return;
                 }
                 document.getElementById("n1").value = total;
-                fill_info("Lista CSV: se han sumado los valores. Resultado: " + total);
+                fill_info(`Lista CSV: se han sumado los valores. Resultado: ${total}`);
             }
         };
 
@@ -299,17 +244,25 @@
                 let texto = document.getElementById("n1").value;
                 let elementos = texto.split(",");
                 let total = 0;
+                let validos = 0;
                 for (let i = 0; i < elementos.length; i++) {
-                    let num = Number(elementos[i]);
-                    if (isNaN(num)) {
-                        fill_info("Error: La lista contiene valores no numéricos", true);
-                        return;
+                    if (elementos[i] !== "") {
+                        let num = Number(elementos[i]);
+                        if (!num && num !== 0) {
+                            fill_info("Error: La lista contiene valores no numéricos", true);
+                            return;
+                        }
+                        total = total + num;
+                        validos = validos + 1;
                     }
-                    total = total + num;
                 }
-                let media = total / elementos.length;
+                if (validos === 0) {
+                    fill_info("Error: La lista CSV está vacía o es inválida", true);
+                    return;
+                }
+                let media = total / validos;
                 document.getElementById("n1").value = media;
-                fill_info("Lista CSV: media calculada. Resultado: " + media);
+                fill_info(`Lista CSV: media calculada. Resultado: ${media}`);
             }
         };
 
@@ -319,15 +272,21 @@
                 let elementos = texto.split(",");
                 let numeros = [];
                 for (let i = 0; i < elementos.length; i++) {
-                    let num = Number(elementos[i]);
-                    if (isNaN(num)) {
-                        fill_info("Error: La lista contiene valores no numéricos", true);
-                        return;
+                    if (elementos[i] !== "") {
+                        let num = Number(elementos[i]);
+                        if (!num && num !== 0) {
+                            fill_info("Error: La lista contiene valores no numéricos", true);
+                            return;
+                        }
+                        numeros.push(num);
                     }
-                    numeros.push(num);
                 }
-                numeros.sort((a, b) => a - b);
-                document.getElementById("n1").value = numeros.join(",");
+                if (numeros.length === 0) {
+                    fill_info("Error: La lista CSV está vacía o es inválida", true);
+                    return;
+                }
+                let ordenados = numeros.sort();
+                document.getElementById("n1").value = ordenados.join(",");
                 fill_info("Lista CSV: valores ordenados");
             }
         };
@@ -336,14 +295,23 @@
             if (validate()) {
                 let texto = document.getElementById("n1").value;
                 let elementos = texto.split(",");
+                let numeros = [];
                 for (let i = 0; i < elementos.length; i++) {
-                    if (isNaN(Number(elementos[i]))) {
-                        fill_info("Error: La lista contiene valores no numéricos", true);
-                        return;
+                    if (elementos[i] !== "") {
+                        let num = Number(elementos[i]);
+                        if (!num && num !== 0) {
+                            fill_info("Error: La lista contiene valores no numéricos", true);
+                            return;
+                        }
+                        numeros.push(num);
                     }
                 }
-                elementos.reverse();
-                document.getElementById("n1").value = elementos.join(",");
+                if (numeros.length === 0) {
+                    fill_info("Error: La lista CSV está vacía o es inválida", true);
+                    return;
+                }
+                numeros.reverse();
+                document.getElementById("n1").value = numeros.join(",");
                 fill_info("Lista CSV: orden invertido");
             }
         };
@@ -352,14 +320,23 @@
             if (validate()) {
                 let texto = document.getElementById("n1").value;
                 let elementos = texto.split(",");
+                let numeros = [];
                 for (let i = 0; i < elementos.length; i++) {
-                    if (isNaN(Number(elementos[i]))) {
-                        fill_info("Error: La lista contiene valores no numéricos", true);
-                        return;
+                    if (elementos[i] !== "") {
+                        let num = Number(elementos[i]);
+                        if (!num && num !== 0) {
+                            fill_info("Error: La lista contiene valores no numéricos", true);
+                            return;
+                        }
+                        numeros.push(num);
                     }
                 }
-                elementos.pop();
-                document.getElementById("n1").value = elementos.join(",");
+                if (numeros.length === 0) {
+                    fill_info("Error: La lista CSV está vacía o es inválida", true);
+                    return;
+                }
+                numeros.pop();
+                document.getElementById("n1").value = numeros.join(",");
                 fill_info("Lista CSV: último elemento borrado");
             }
         };
