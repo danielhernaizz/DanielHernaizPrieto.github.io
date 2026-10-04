@@ -1,7 +1,7 @@
 # Calculadora Avanzada - Tecnologías Móviles y Web
 Daniel Hernaiz Prieto
 
-🔗 **Enlace a la calculadora funcional:** [https://danielhernaizprieto.github.io](https://danielhernaizprieto.github.io)
+🔗 **Enlace a la calculadora funcional:** [[https://danielhernaizprieto.github.io](https://danielhernaizprieto.github.io)](https://danielhernaizz.github.io/DanielHernaizPrieto.github.io/)
 
 ## Funcionalidades Implementadas
 Esta calculadora web ha sido desarrollada utilizando HTML, CSS y JavaScript vanilla.
