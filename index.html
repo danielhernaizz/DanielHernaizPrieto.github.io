@@ -38,7 +38,9 @@
         <h3>Operaciones Binarias</h3>
         <div class="btn-group">
             <button id="addition">Suma (+)</button>
+            <button id="subtraction">Resta (-)</button>
             <button id="multiplication">Multiplicación (*)</button>
+            <button id="division">División (/)</button>
             <button id="power">Potencia (xʸ)</button>
         </div>
         <button id="eq" class="btn-equal">Resolver (=)</button>
@@ -155,6 +157,20 @@
             }
         };
 
+        const resta = () => {
+            if (validate()) {
+                let num = Number(document.getElementById("n1").value);
+                if (!num && num !== 0) {
+                    fill_info("Error: Introduce un número válido", true);
+                    return;
+                }
+                operando1 = num;
+                operador = "-";
+                document.getElementById("n1").value = "";
+                fill_info("Operación: Resta. Introduce el segundo número");
+            }
+        };
+
         const multiplicacion = () => {
             if (validate()) {
                 let num = Number(document.getElementById("n1").value);
@@ -166,6 +182,20 @@
                 operador = "*";
                 document.getElementById("n1").value = "";
                 fill_info("Operación: Multiplicación. Introduce el segundo número");
+            }
+        };
+
+        const division = () => {
+            if (validate()) {
+                let num = Number(document.getElementById("n1").value);
+                if (!num && num !== 0) {
+                    fill_info("Error: Introduce un número válido", true);
+                    return;
+                }
+                operando1 = num;
+                operador = "/";
+                document.getElementById("n1").value = "";
+                fill_info("Operación: División. Introduce el segundo número");
             }
         };
 
@@ -196,9 +226,20 @@
                 if (operador === "+") {
                     res = operando1 + numero2;
                     nombre = "Suma";
+                } else if (operador === "-") {
+                    res = operando1 - numero2;
+                    nombre = "Resta";
                 } else if (operador === "*") {
                     res = operando1 * numero2;
                     nombre = "Multiplicación";
+                } else if (operador === "/") {
+                    if (numero2 === 0) {
+                        fill_info("Error: Se ha intentado dividir entre 0", true);
+                        operador = "";
+                        return;
+                    }
+                    res = operando1 / numero2;
+                    nombre = "División";
                 } else if (operador === "^") {
                     res = Math.pow(operando1, numero2);
                     nombre = "Potencia";
@@ -348,7 +389,9 @@
             document.getElementById("sqrt").addEventListener("click", sqrt);
             
             document.getElementById("addition").addEventListener("click", suma);
+            document.getElementById("subtraction").addEventListener("click", resta);
             document.getElementById("multiplication").addEventListener("click", multiplicacion);
+            document.getElementById("division").addEventListener("click", division);
             document.getElementById("power").addEventListener("click", potencia);
             document.getElementById("eq").addEventListener("click", eq);
             
